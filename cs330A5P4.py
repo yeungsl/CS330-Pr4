@@ -6,6 +6,9 @@ problem 4
 
 Sailung Yeung
 email: yeungsl@bu.edu
+
+Shang-Hung Tsai
+email: tsaicash@bu.edu
 """
 import matplotlib.pyplot as plt
 import random
