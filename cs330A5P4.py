@@ -93,7 +93,7 @@ def doC():
     for n in range(3,13):
         ls = [random.randrange(10**n) for i in range(100)]
         #print(ls)
-        #ta += [findIfPartition(ls)] ## limitation seems to be 10 ** 4,have to wait so long for 10 ** 5
+        ta += [findIfPartition(ls)] ## limitation seems to be 10 ** 4,have to wait so long for 10 ** 5
         tb += [kk(ls)]
     print(tb)
     plt.xlabel("the exponent of 10**(3... 12)")
