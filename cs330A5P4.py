@@ -13,68 +13,63 @@ email: tsaicash@bu.edu
 import matplotlib.pyplot as plt
 import random
 import numpy as np
-import copy
 import time
 import heapq
 ##(a)
-def findIfPartition(a):
-    t = time.clock()
+def algorithm1(a):
+    
+    print("For algorithm 1: ")
+    start = time.clock()
+    operation = 0
+    
     s = sum(a)
-    o = 0
     if s % 2 != 0:
         s -= 1
-    sub = np.zeros((s//2 + 1, len(a)+1))
-    for i in range(len(a)+1):
-        sub[0][i] = 1
-        o += 1
+    halfs = s//2
     
-    r = 0
-    for i in range(1, s//2 + 1):
+    # create table
+    table = np.zeros((halfs+1, len(a)+1))
+    
+    for i in range(1, halfs+1):
         for j in range(1, len(a)+1):
-            sub[i][j] = sub[i][j-1]
-            if i >= a[j-1]:
-                sub[i][j] = (sub[i][j] or sub[i-a[j-1]][j-1])
-         
-            ##print(sub)
-            if i == s//2 and sub[i][j] == 1:
-                r = j
+            include = table[i-a[j-1]][j-1]+a[j-1]
+            if (include <=i and i-(include)<i-table[i][j-1]):
+                # if include this element makes the result closer to the sum
+                table[i][j] = include
+            else:
+                # else, we do not include this element
+                table[i][j] = table[i][j-1]
+            operation += 1
+            
+    # back track partition
+    partition1 = []
+    i = halfs
+    j = len(a)
+    while i != 0 and j != 0:
+        for index in range(j+1):
+            operation += 1
+            if table[i][index] == i:
+                partition1 += [index]
+                i = int(table[i][index] - a[index-1])
+                j -= 1
                 break
-            o += 1
-        
-    #print(sub)
-    #print("r:", r)
-    hs = s//2
-    mins = abs(sum(a[0:r]) - hs)
-   
-    if sum(a[0:r]) == hs:
-        A1 = a[0:r]
-        A2 = a[r:]
-        #print("A1: ", a[0:r], " A2: ", a[r:],"\n")
-    else:
-        
-        #print("initial:", mins)
-        for i in range(1, len(a[0:r])):
-            o += 1
-            d = copy.deepcopy(a[0:i])
-            d += [a[r - 1]]
-            #print("d:",d)
-            if abs(sum(d) - hs) < mins:
-                mins = abs(sum(d) - hs)
-                #print("min:", mins)
-                j = i
-                #print("min index:", j)
-        A1 = a[0:j] + [a[r-1]]
-        A2 = a[r:] + a[j :r-1]
     
+    sign = [1 for x in range(len(a))]
+    partition1sum = 0
     
-    S = [a * -1 for a in A1] + A2
-    t1 = time.clock() - t
-    print("residual: ", mins)
-    print("A1: ",A1," A2: ",A2, )
-    print("S:", S)
-    print("Running time: ", t1,"s")
-    print("# of Operation: ", o, " = m * n, where m is the size of the input array and n is the array sum/2")
-    return t1
+    for i in partition1:
+        sign[i-1] *= -1
+        partition1sum += a[i-1]
+        operation += 1
+    print("This is the sign array: ", sign)
+ 
+    partition2sum = sum(a) - partition1sum
+    residue = abs(partition1sum - partition2sum)
+    print("residue = ", residue)
+    
+    t = time.clock()-start
+    print("Running time: ", t,"s")    
+    print("# of Operation (roughly): ", operation)
 
 ##(b)
 def kk(a):
@@ -115,13 +110,12 @@ def doC():
     testA = []
     testB = []
 #    for n in range(3,13):
-    for n in range(3,5):
+    for n in range(3,7):
         ls = [random.randrange(10**n) for i in range(100)]
         print("Input range is 10**"+str(n))
         #print(ls)
         testA += [algorithm1(ls)] ## limitation seems to be 10 ** 4,have to wait so long for 10 ** 5
         testB += [kk(ls)]
-    #print(testB)
     
     plt.xlabel("the exponent of 10**(3... 12)")
     plt.ylabel("the total seconds taken by the two process")
