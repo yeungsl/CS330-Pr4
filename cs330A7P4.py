@@ -12,6 +12,9 @@ import numpy as np
 import copy
 import time
 import heapq
+import math
+import statistics as st
+import pandas as pd
 
 ##kk
 def kk(a):
@@ -39,13 +42,13 @@ def kk(a):
         
     runtime = time.clock() - startTime
     #print(na)
-    print("For KK algorithm:")
-    print("The residue is: ", (min(na) * -1))
-    print("Running time: ", runtime,"s")
-    print("number of operation: ", operation)
-    print()
+#    print("For KK algorithm:")
+#    print("The residue is: ", (min(na) * -1))
+#    print("Running time: ", runtime,"s")
+#    print("number of operation: ", operation)
+#    print()
     
-    return runtime
+    return (min(na) * -1)
 
 
 def randoml(l):
@@ -103,5 +106,84 @@ def gd(array, k):
             sign = sign2
             currentResidue = newResidue
         
+    return currentResidue    
+    
+
+##Simulated Annealing
+def sa(a, k):
+    length = len(a)
+    sign = randoml(length)
+    
+    currentResidue = abs(residue(a, sign))
+    
+    for i in range(k):
+        indexI = random.randint(0, length-1)
+        indexJ = random.randint(0, length-1)
+        while indexI == indexJ:
+            indexJ = random.randint(0, length-1)
+        
+        sign2= copy.deepcopy(sign)
+        sign2[indexI] *= -1
+         
+        n = random.randint(0,1)
+        if n == 0:
+            sign2[indexJ] *= -1
+        
+        newResidue = abs(residue(a, sign2))
+        p = P(newResidue, currentResidue, i)
+        j = random.random()
+        ##print(p)
+        if newResidue < currentResidue:
+            sign = sign2
+            currentResidue = newResidue
+        else:
+            if j < p:
+                sign = sign2
+                currentResidue = newResidue
+                
     return currentResidue
+    
+    
+    
+def P(rnew, rold, i):
+    t = (10**10) * (0.8**math.floor(i/300))
+    ##print(t)
+    return math.exp(-1*(rnew - rold/t))
+    
+    
+    
+    
+def test():
+    k = []
+    r = []
+    g = []
+    s = []  
+    nk = 1
+    for i in range(nk):
+        ls  = [random.randrange(10**12) for i in range(100)]
+        k.append(kk(ls))
+        r.append(rr(ls, 25000))
+        g.append(gd(ls, 25000))
+        s.append(sa(ls, 25000))
+    print("kk",st.mean(k))
+    print("rr", st.mean(r))
+    print("gd", st.mean(g))
+    print("sa", st.mean(s))
+    
+    plt.xlabel("number of instances")
+    plt.ylabel("residue")
+    plt.gca().set_prop_cycle(['red', 'green', 'blue', 'yellow'])
+    x = np.arange(nk)
+    plt.plot(x, k)
+    plt.plot(x, r)
+    plt.plot(x, g)
+    plt.plot(x, s)
+
+    plt.legend(['kk', 'rr', 'gd', 'sa'], loc='upper right')
+
+    plt.show()
+    df = pd.DataFrame({"kk":k, "rr":r, "gd":g, "sa":s})
+    writer = pd.ExcelWriter("out.xlsx", engine = 'xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1')
+    writer.save()
     
