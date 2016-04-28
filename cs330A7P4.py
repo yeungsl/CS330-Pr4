@@ -54,19 +54,54 @@ def randoml(l):
     for i in range(l):
         n = random.randint(0,1)
         if n == 0:
-            ls[i] = -1
+            ls.append(-1)
         else:
-            ls[i] = 1
+            ls.append(1)
     return ls
+
+def residue(array, sign):
+    result = 0
+    for i in range(len(array)):
+            result += sign[i] * array[i]
+    return result
 
 
 #repeated random
-def rr(a, k):
-    r = []
+def rr(array, k):
+    results = []
+    
     for i in range(k):
-        l = randoml(len(a))
-        na = [x * a for x in l for a in a] 
-        r[i] = sum(na)
+        l = randoml(len(array))
+
+        results.append(abs(residue(array, l)))
         
-    return min(r)
-            
+    return min(results)
+    
+##Gradient Descent
+def gd(array, k):
+    length = len(array)
+    sign = randoml(length)
+    
+    currentResidue = abs(residue(array, sign))
+    
+    for i in range(k):
+        indexI = random.randint(0, length-1)
+        indexJ = random.randint(0, length-1)
+        while indexI == indexJ:
+            indexJ = random.randint(0, length-1)
+        
+        sign2= copy.deepcopy(sign)
+        sign2[indexI] *= -1
+         
+        n = random.randint(0,1)
+        if n == 0:
+            sign2[indexJ] *= -1
+        
+        newResidue = abs(residue(array, sign2))
+        
+        if newResidue < currentResidue:
+            sign = sign2
+            currentResidue = newResidue
+        
+    return currentResidue
+    
