@@ -48,22 +48,25 @@ def kk(a):
     return runtime
 
 
-def 
-
-
-
-
-#repeated random
-def rr(a):
+def randoml(l):
     ##creating a random array of -1 and 1s
     ls = []
-    for i in range(len(a)):
+    for i in range(l):
         n = random.randint(0,1)
         if n == 0:
             ls[i] = -1
         else:
             ls[i] = 1
-    na = [l * a for l in ls for a in a]                
-    
-            
+    return ls
+
+
+#repeated random
+def rr(a, k):
+    r = []
+    for i in range(k):
+        l = randoml(len(a))
+        na = [x * a for x in l for a in a] 
+        r[i] = sum(na)
+        
+    return min(r)
             
