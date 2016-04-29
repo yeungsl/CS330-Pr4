@@ -22,7 +22,7 @@ def kk(a):
     ##make all the elements in the list to be negative then put them into a min heap
     ##so that every time it pops a value, it will have the most small value returned
     ##if negated the value poped will become the max value in the list
-    startTime = time.clock()
+    #startTime = time.clock()
     operation = 0      # counter for operation
     
     na = [x * -1 for x in a]
@@ -40,7 +40,7 @@ def kk(a):
         operation += 1
         
         
-    runtime = time.clock() - startTime
+    #runtime = time.clock() - startTime
     #print(na)
 #    print("For KK algorithm:")
 #    print("The residue is: ", (min(na) * -1))
@@ -158,7 +158,7 @@ def test():
     r = []
     g = []
     s = []  
-    nk = 1
+    nk = 50
     for i in range(nk):
         ls  = [random.randrange(10**12) for i in range(100)]
         k.append(kk(ls))
@@ -172,7 +172,7 @@ def test():
     
     plt.xlabel("number of instances")
     plt.ylabel("residue")
-    plt.gca().set_prop_cycle(['red', 'green', 'blue', 'yellow'])
+    plt.gca().set_color_cycle(['red', 'green', 'blue', 'yellow'])
     x = np.arange(nk)
     plt.plot(x, k)
     plt.plot(x, r)
